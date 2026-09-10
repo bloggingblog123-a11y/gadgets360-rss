@@ -1,7 +1,7 @@
 import feedparser
 from xml.etree.ElementTree import Element, SubElement, ElementTree
 
-SOURCE_FEED = "https://www.gadgets360.com/rss"
+SOURCE_FEED = "https://www.gadgets360.com/rss/feeds"
 OUTPUT_FILE = "feed.xml"
 
 feed = feedparser.parse(SOURCE_FEED)

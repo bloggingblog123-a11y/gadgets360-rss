@@ -1,35 +1,45 @@
 import feedparser
-from xml.etree.ElementTree import Element, SubElement, ElementTree
+from xml.sax.saxutils import escape
 
 SOURCE_FEED = "https://www.gadgets360.com/rss/feeds"
-OUTPUT_FILE = "feed.xml"
 
 feed = feedparser.parse(SOURCE_FEED)
 
-rss = Element("rss", {"version": "2.0"})
-channel = SubElement(rss, "channel")
+items = []
 
-SubElement(channel, "title").text = "Gadgets 360 - All Stories"
-SubElement(channel, "link").text = "https://www.gadgets360.com/"
-SubElement(channel, "description").text = (
-    "Latest stories from Gadgets 360. "
-    "Source: Gadgets 360."
-)
+for entry in feed.entries:
+    title = escape(entry.get("title", "Gadgets 360"))
+    link = escape(entry.get("link", ""))
+    guid = escape(entry.get("id", link))
+    description = escape(
+        entry.get("summary", entry.get("description", ""))
+    )
+    published = escape(entry.get("published", ""))
 
-for item in feed.entries:
-    entry = SubElement(channel, "item")
+    items.append(f"""
+    <item>
+      <title>{title}</title>
+      <link>{link}</link>
+      <guid isPermaLink="false">{guid}</guid>
+      <description>{description}</description>
+      <pubDate>{published}</pubDate>
+    </item>
+    """)
 
-    SubElement(entry, "title").text = item.get("title", "")
-    SubElement(entry, "link").text = item.get("link", "")
-    SubElement(entry, "guid").text = item.get("id", item.get("link", ""))
+xml = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Gadgets 360 - All Stories</title>
+    <link>https://www.gadgets360.com/</link>
+    <description>Latest stories from Gadgets 360</description>
+    <language>en-IN</language>
+    <generator>Personal Gadgets 360 RSS Feed</generator>
+    {''.join(items)}
+  </channel>
+</rss>
+"""
 
-    if item.get("summary"):
-        SubElement(entry, "description").text = item.summary
+with open("feed.xml", "w", encoding="utf-8") as f:
+    f.write(xml)
 
-    if item.get("published"):
-        SubElement(entry, "pubDate").text = item.published
-
-tree = ElementTree(rss)
-tree.write(OUTPUT_FILE, encoding="utf-8", xml_declaration=True)
-
-print(f"Updated RSS feed with {len(feed.entries)} stories.")
+print(f"Created feed.xml with {len(items)} stories")

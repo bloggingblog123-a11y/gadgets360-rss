@@ -1,2 +1,11 @@
-<?xml version='1.0' encoding='utf-8'?>
-<rss version="2.0"><channel><title>Gadgets 360 - All Stories</title><link>https://www.gadgets360.com/</link><description>Latest stories from Gadgets 360. Source: Gadgets 360.</description></channel></rss>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Gadgets 360 - All Stories</title>
+    <link>https://www.gadgets360.com/</link>
+    <description>Latest stories from Gadgets 360</description>
+    <language>en-IN</language>
+    <generator>Personal Gadgets 360 RSS Feed</generator>
+    
+  </channel>
+</rss>
